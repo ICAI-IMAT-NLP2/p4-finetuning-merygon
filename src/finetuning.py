@@ -43,13 +43,7 @@ class LoRA(nn.Module):
             param.requires_grad = False
             
     def forward(self, x):
-        # Perform forward pass with low-rank update
-        # In LoRA: ΔW = B @ A where A: (r, in), B: (out, r)
-        # But we have A: (out, r), B: (r, in)
-        # So ΔW = A @ B has shape (out, in) ✓
-        # For forward: y = x @ W.T + x @ ΔW.T = x @ W.T + x @ (A @ B).T
-        # = x @ W.T + x @ B.T @ A.T
-        lora_update = (x @ self.B.t()) @ self.A.t() * self.scaling
+        lora_update = (x @ self.A @ self.B) * self.scaling
         return self.original_layer(x) + lora_update
 
 def inject_lora_into_model(model, r=4, alpha=32, device='cpu'):
