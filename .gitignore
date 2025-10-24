@@ -8,6 +8,7 @@ __pycache__/
 .mypy_cache/
 /results/
 scalers/
+NLPP3/
 
 # files
 *.csv
